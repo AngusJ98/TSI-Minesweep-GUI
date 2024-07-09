@@ -23,8 +23,8 @@ public class Tile  extends JButton {
         this.isRevealed = false;
         this.isFlagged = false;
         this.setText("");
-        this.addActionListener(action);
-        this.addMouseListener(new TileListener(this));
+        this.addActionListener(action); //add left click functionality
+        this.addMouseListener(new TileListener(this)); //add right click functionality
     }
 
     public boolean isFlagged() {
@@ -52,8 +52,9 @@ public class Tile  extends JButton {
         }
     }
 
+    //Reveals the tile. Uses information on the tile to determine how it should display
     public void reveal() {
-        this.setEnabled(false);
+        this.setEnabled(false); //disable the button
         this.isRevealed = true;
         if (this.isBomb) {
             this.setText(bombString);

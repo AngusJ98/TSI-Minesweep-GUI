@@ -6,6 +6,7 @@ import javax.sound.sampled.Clip;
 import java.io.File;
 
 /**
+ * Responsible for handling all audio requests
  * Audio resources both copyright free from https://pixabay.com/
  * Jazz : https://pixabay.com/music/traditional-jazz-the-best-jazz-club-in-new-orleans-164472/
  * bomb : https://pixabay.com/sound-effects/a-bomb-139689/
@@ -13,6 +14,7 @@ import java.io.File;
 public class AudioPlayer {
     private Clip music;
     private boolean playing;
+    //TODO: Move the music start to a method for clarity
     public AudioPlayer() {
         try {
 
@@ -28,6 +30,7 @@ public class AudioPlayer {
         }
     }
 
+    //Pauses and plays the music
     public void pause () {
         if (this.playing) {
             this.music.stop();
@@ -39,7 +42,7 @@ public class AudioPlayer {
     }
 
 
-
+    //Plays the bomb noise
     public void playBombNoise() {
         try {
             File audioFile = new File("src/main/resources/bomb.wav");

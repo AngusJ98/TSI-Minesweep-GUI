@@ -15,11 +15,13 @@ public class Minesweeper {
     private JFrame frame;
     private int moveNumber;
     private AudioPlayer audioPlayer;
+
+    //We need the action listener here so we can use this classes methods
     private final ActionListener tileActionListener = actionEvent -> {
         Object origin = actionEvent.getSource();
-        Tile tile = (Tile) origin;
-        if (!tile.isFlagged()) {
-            if (this.moveNumber == 0) {
+        Tile tile = (Tile) origin; //Only tiles will have this method so this is safe.
+        if (!tile.isFlagged()) { //Only do move if tile is not flagged
+            if (this.moveNumber == 0) { //First move has special code to ensure a 0 bomb tile is hit.
                 this.firstMove(tile.getX(), tile.getY());
             }
             this.activateTileAtCoord(tile.getX(), tile.getY());
@@ -46,8 +48,9 @@ public class Minesweeper {
 
     }
 
+    //sets up the container for everything graphical
     private void setUpFrame() {
-        this.frame = new JFrame();
+        this.frame = new JFrame("Minesweeper");
 
         this.frame.setSize(1000,1000);
         this.frame.setResizable(false);
@@ -55,6 +58,7 @@ public class Minesweeper {
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+    //adds a menu to the frame
     private void setUpMenu() {
         JPanel menuPanel = new JPanel();
         JButton restart = new JButton("Restart");
@@ -67,7 +71,7 @@ public class Minesweeper {
         changeDifficulty.addActionListener(actionEvent ->
                 this.changeDifficulty());
 
-        JButton pauseMusic = new JButton("Music");
+        JButton pauseMusic = new JButton("Music Toggle");
         pauseMusic.addActionListener(actionEvent -> this.audioPlayer.pause());
 
         menuPanel.add(restart);
@@ -77,10 +81,13 @@ public class Minesweeper {
 
     }
 
+    //a collection of various methods (currently 1) called at cleanup
     private void cleanUp() {
         this.moveNumber = 0;
     }
 
+
+    //sets up the tiles for both graphics and functionality
     private void setupTiles() {
         this.tiles = new Tile[xSize][ySize];
 
@@ -96,7 +103,7 @@ public class Minesweeper {
         this.frame.add(grid);
     }
 
-
+    //adds bombs to the board for a new level
     private void setupBombs() {
 
         //Clear the board first
@@ -106,6 +113,7 @@ public class Minesweeper {
             }
         }
         //randomly generate locations for mines
+        //uses a hash map to check for doubles
         HashSet<Tile> tileHash = new HashSet<Tile>();
         Random random = new Random();
         while (tileHash.size() < this.numBombs) {
@@ -115,6 +123,7 @@ public class Minesweeper {
             tileHash.add(testTile);
         }
 
+        //for the tiles adjacent to bombs, add 1 to their count
         for (Tile t : tileHash) {
             t.setBomb(true);
             for (Tile t2 : this.getAdjacentTiles(t)){
@@ -124,16 +133,16 @@ public class Minesweeper {
     }
 
 
-
+    //Code to activate a tile at coord
     private void activateTileAtCoord(int x, int y) {
         Tile tile = tiles[x][y];
         this.moveNumber++;
-        if (tile.isBomb()) {
+        if (tile.isBomb()) { //you lose
             tile.reveal();
             this.audioPlayer.playBombNoise();
             this.retryDialog("Oops, looks like you clicked on a mine. Would you like to try again?");
 
-        } else if (tile.getNumBombsAdjacent() == 0) {
+        } else if (tile.getNumBombsAdjacent() == 0) { // if a 0 adjacent tile, cascade
             tile.reveal();
             //then check adjacent tiles
             for (Tile t : this.getAdjacentTiles(tile)) {
@@ -142,7 +151,7 @@ public class Minesweeper {
                 }
             }
 
-        } else {
+        } else { //default behaviour
             tile.reveal();
         }
 
@@ -151,6 +160,7 @@ public class Minesweeper {
         }
     }
 
+    //Dialog box to restart the game
     public void retryDialog(String message) {
         int option = (JOptionPane.showOptionDialog(this.frame, message, "Retry?", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, new String[]{"Yes", "Change Difficulty", "Quit"}, "No"));
 
@@ -168,6 +178,7 @@ public class Minesweeper {
         }
     }
 
+    //checks for victory conditions
     private boolean checkWin() {
         for (int i = 0; i < this.xSize; i++) {
             for (int j = 0; j < this.ySize; j++) {
@@ -180,6 +191,7 @@ public class Minesweeper {
         return true;
     }
 
+    //various options for choosing difficulty. TODO: Move this to another class with other user input
     public void changeDifficulty() {
         String[] options = {"Easy","Normal","Hard","Very Hard","ISTQB difficulty"};
         String difficulty = (String)JOptionPane.showInputDialog(this.frame, "Choose a difficulty", "Difficulty Settings", JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
@@ -209,12 +221,15 @@ public class Minesweeper {
             case "ISTQB difficulty":
                 this.xSize = 8;
                 this.ySize = 5;
-                this.numBombs = 26;
+                this.numBombs = 14;
                 break;
             default:
                 //Should be impossible to get here but...
                 JOptionPane.showMessageDialog(frame, "Please choose one of the valid options.");
         }
+
+        //Starts a new game with a new frame based on the difficulty settings
+        //TODO: There should be a way to do this without deleting the frame
         this.frame.dispose();
 
         this.setUpFrame();
@@ -226,7 +241,8 @@ public class Minesweeper {
         this.frame.setVisible(true);
     }
 
-    //Regenerate map on first move until the player has clicked a space with no bombs
+    //Regenerate bombs on first move until the player has clicked a space with no bombs
+    //TODO: Rewrite bomb generation method to take a coordinate to ignore as a value
     private void firstMove(int x, int y) {
         Tile tile = this.tiles[x][y];
         while (tile.getNumBombsAdjacent() != 0 || tile.isBomb()) {
@@ -236,6 +252,7 @@ public class Minesweeper {
         }
     }
 
+    //Used to get all tiles adjacent to a tile
     private ArrayList<Tile> getAdjacentTiles (Tile tile) {
         ArrayList<Tile> tileList = new ArrayList<Tile>();
         for (int dx = -1; dx <= 1; dx++) {
