@@ -48,7 +48,7 @@ public class Tile  extends JButton {
             this.setText("");
         } else {
             this.isFlagged = true;
-            this.setText("FLAG");
+            this.setText("\uD83D\uDEA9");
         }
     }
 

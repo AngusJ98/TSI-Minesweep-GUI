@@ -26,7 +26,6 @@ public class Minesweeper {
             }
             this.activateTileAtCoord(tile.getX(), tile.getY());
         }
-        //System.out.println(tile.getX() + "-" + tile.getY());
     };
 
 
@@ -193,7 +192,7 @@ public class Minesweeper {
 
     //various options for choosing difficulty. TODO: Move this to another class with other user input
     public void changeDifficulty() {
-        String[] options = {"Easy","Normal","Hard","Very Hard","ISTQB difficulty"};
+        String[] options = {"Easy","Normal","Hard","Very Hard"};
         String difficulty = (String)JOptionPane.showInputDialog(this.frame, "Choose a difficulty", "Difficulty Settings", JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
         System.out.println(difficulty);
 
@@ -217,11 +216,6 @@ public class Minesweeper {
                 this.xSize = 20;
                 this.ySize = 20;
                 this.numBombs = 40;
-                break;
-            case "ISTQB difficulty":
-                this.xSize = 8;
-                this.ySize = 5;
-                this.numBombs = 14;
                 break;
             default:
                 //Should be impossible to get here but...
