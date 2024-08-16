@@ -17,7 +17,6 @@ public class TileListener extends MouseAdapter {
     @Override
     public void mousePressed(MouseEvent e) {
         super.mousePressed(e);
-        //System.out.println(e.getButton() + "-" + this.tile.isFlagged() );
         if (SwingUtilities.isRightMouseButton(e)) {
             this.tile.onRightClick(); //call the tiles method to add a flag
         }

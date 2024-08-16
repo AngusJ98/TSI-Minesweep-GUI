@@ -14,7 +14,7 @@ public class Minesweeper {
     private int numBombs;
     private JFrame frame;
     private int moveNumber;
-    private AudioPlayer audioPlayer;
+    private final AudioPlayer audioPlayer;
 
     //We need the action listener here so we can use this classes methods
     private final ActionListener tileActionListener = actionEvent -> {
@@ -54,7 +54,7 @@ public class Minesweeper {
         this.frame.setSize(1000,1000);
         this.frame.setResizable(false);
         this.frame.setLayout(new BorderLayout());
-        this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
     //adds a menu to the frame
@@ -254,7 +254,6 @@ public class Minesweeper {
                 int newX = tile.getX() + dx;
                 int newY = tile.getY() + dy;
                 if (newX >= 0 && newX < this.xSize && newY >= 0 && newY < this.ySize) {
-                    //System.out.println("Success " + newX + "-" + newY);
                     tileList.add(this.tiles[newX][newY]);
                 }
             }
